@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的AI学习规划师</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #e6f2ff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: auto;
+        }
+        .page {
+            display: none;
+            position: relative;
+            width: 1280px;
+            height: 1280px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        .page.active {
+            display: block;
+        }
+        .bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+        }
+
+        #page1 .title {
+            position: absolute;
+            top: 526px;
+            left: 497px;
+            width: 391px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+            text-align: center;
+            line-height: 1.2;
+            pointer-events: auto;
+        }
+        #page1 .input {
+            position: absolute;
+            width: 567px;
+            padding: 8px 12px;
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            font-size: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            outline: none;
+            pointer-events: auto;
+            text-align: center;
+        }
+        #page1 #major { top: 673px; left: 503px; }
+        #page1 #subject { top: 794px; left: 500px; }
+        #page1 #goal { top: 906px; left: 497px; }
+        .btn-text {
+            position: absolute;
+            top: 1040px;
+            left: 844px;
+            width: 228px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+            text-align: center;
+            line-height: 1.4;
+            pointer-events: auto;
+        }
+
+        .plan-item {
+            position: absolute;
+            font-size: 18px;
+            text-align: center;
+            color: #0d47a1;
+            pointer-events: auto;
+            white-space: normal;
+            word-wrap: break-word;
+            z-index: 11;
+            line-height: 1.4;
+        }
+
+        /* ========== 第一周 ========== */
+        #page2 .plan-item:nth-child(1)  { top: 672px; left: 212px; width: 120px; }
+        #page2 .plan-item:nth-child(2)  { top: 794px; left: 212px; width: 120px; }
+        #page2 .plan-item:nth-child(3)  { top: 916px; left: 212px; width: 120px; }
+        #page2 .plan-item:nth-child(4)  { top: 675px; left: 377px; width: 120px; }
+        #page2 .plan-item:nth-child(5)  { top: 797px; left: 377px; width: 120px; }
+        #page2 .plan-item:nth-child(6)  { top: 919px; left: 377px; width: 120px; }
+        #page2 .plan-item:nth-child(7)  { top: 674px; left: 517px; width: 120px; }
+        #page2 .plan-item:nth-child(8)  { top: 796px; left: 517px; width: 120px; }
+        #page2 .plan-item:nth-child(9)  { top: 918px; left: 517px; width: 120px; }
+        #page2 .plan-item:nth-child(10) { top: 671px; left: 686px; width: 120px; }
+        #page2 .plan-item:nth-child(11) { top: 793px; left: 686px; width: 120px; }
+        #page2 .plan-item:nth-child(12) { top: 915px; left: 686px; width: 120px; }
+        #page2 .plan-item:nth-child(13) { top: 673px; left: 834px; width: 120px; }
+        #page2 .plan-item:nth-child(14) { top: 795px; left: 834px; width: 120px; }
+        #page2 .plan-item:nth-child(15) { top: 917px; left: 834px; width: 120px; }
+        #page2 .plan-item:nth-child(16) { top: 667px; left: 984px; width: 120px; }
+        #page2 .plan-item:nth-child(17) { top: 789px; left: 984px; width: 120px; }
+        #page2 .plan-item:nth-child(18) { top: 911px; left: 984px; width: 120px; }
+        #page2 .btn-text { top: 1040px; left: 844px; }
+
+        /* ========== 第二周 ========== */
+        #page3 .plan-item:nth-child(1)  { top: 658px; left: 182px; width: 120px; }
+        #page3 .plan-item:nth-child(2)  { top: 793px; left: 182px; width: 120px; }
+        #page3 .plan-item:nth-child(3)  { top: 928px; left: 182px; width: 120px; }
+        #page3 .plan-item:nth-child(4)  { top: 661px; left: 362px; width: 120px; }
+        #page3 .plan-item:nth-child(5)  { top: 796px; left: 362px; width: 120px; }
+        #page3 .plan-item:nth-child(6)  { top: 931px; left: 362px; width: 120px; }
+        #page3 .plan-item:nth-child(7)  { top: 658px; left: 512px; width: 120px; }
+        #page3 .plan-item:nth-child(8)  { top: 793px; left: 512px; width: 120px; }
+        #page3 .plan-item:nth-child(9)  { top: 928px; left: 512px; width: 120px; }
+        #page3 .plan-item:nth-child(10) { top: 660px; left: 662px; width: 120px; }
+        #page3 .plan-item:nth-child(11) { top: 795px; left: 662px; width: 120px; }
+        #page3 .plan-item:nth-child(12) { top: 930px; left: 662px; width: 120px; }
+        #page3 .plan-item:nth-child(13) { top: 663px; left: 821px; width: 120px; }
+        #page3 .plan-item:nth-child(14) { top: 798px; left: 821px; width: 120px; }
+        #page3 .plan-item:nth-child(15) { top: 933px; left: 821px; width: 120px; }
+        #page3 .plan-item:nth-child(16) { top: 655px; left: 975px; width: 120px; }
+        #page3 .plan-item:nth-child(17) { top: 790px; left: 975px; width: 120px; }
+        #page3 .plan-item:nth-child(18) { top: 925px; left: 975px; width: 120px; }
+        #page3 .btn-text { top: 1040px; left: 844px; }
+
+        /* ========== 第三周 ========== */
+        #page4 .plan-item:nth-child(1)  { top: 634px; left: 176px; width: 120px; }
+        #page4 .plan-item:nth-child(2)  { top: 745px; left: 176px; width: 120px; }
+        #page4 .plan-item:nth-child(3)  { top: 856px; left: 176px; width: 120px; }
+        #page4 .plan-item:nth-child(4)  { top: 639px; left: 371px; width: 120px; }
+        #page4 .plan-item:nth-child(5)  { top: 750px; left: 371px; width: 120px; }
+        #page4 .plan-item:nth-child(6)  { top: 861px; left: 371px; width: 120px; }
+        #page4 .plan-item:nth-child(7)  { top: 641px; left: 515px; width: 120px; }
+        #page4 .plan-item:nth-child(8)  { top: 752px; left: 515px; width: 120px; }
+        #page4 .plan-item:nth-child(9)  { top: 863px; left: 515px; width: 120px; }
+        #page4 .plan-item:nth-child(10) { top: 635px; left: 672px; width: 120px; }
+        #page4 .plan-item:nth-child(11) { top: 746px; left: 672px; width: 120px; }
+        #page4 .plan-item:nth-child(12) { top: 857px; left: 672px; width: 120px; }
+        #page4 .plan-item:nth-child(13) { top: 642px; left: 818px; width: 120px; }
+        #page4 .plan-item:nth-child(14) { top: 753px; left: 818px; width: 120px; }
+        #page4 .plan-item:nth-child(15) { top: 864px; left: 818px; width: 120px; }
+        #page4 .plan-item:nth-child(16) { top: 638px; left: 984px; width: 120px; }
+        #page4 .plan-item:nth-child(17) { top: 749px; left: 984px; width: 120px; }
+        #page4 .plan-item:nth-child(18) { top: 860px; left: 984px; width: 120px; }
+        #page4 .btn-text { top: 1040px; left: 844px; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div id="page1" class="page active">
+    <div class="bg" style="background-image: url('bg1.png');"></div>
+    <div class="content">
+        <div class="title">我的AI学习规划师</div>
+        <input type="text" id="major" class="input" placeholder="请输入你的专业">
+        <input type="text" id="subject" class="input" placeholder="请输入你的学科">
+        <input type="text" id="goal" class="input" placeholder="请输入你的目标">
+        <div class="btn-text" onclick="generatePlan()">生成计划</div>
+    </div>
+</div>
+
+<div id="page2" class="page">
+    <div class="bg" style="background-image: url('bg2.png');"></div>
+    <div class="content">
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="btn-text" onclick="showPage('page3')">下一周</div>
+    </div>
+</div>
+
+<div id="page3" class="page">
+    <div class="bg" style="background-image: url('bg3.png');"></div>
+    <div class="content">
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="btn-text" onclick="showPage('page4')">下一周</div>
+    </div>
+</div>
+
+<div id="page4" class="page">
+    <div class="bg" style="background-image: url('bg4.png');"></div>
+    <div class="content">
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="plan-item"></div><div class="plan-item"></div><div class="plan-item"></div>
+        <div class="btn-text" onclick="showCongrats()">计划完成</div>
+    </div>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>🎉 恭喜你完成计划！</h2>
+        <p>你真棒！继续加油！</p >
+    </div>
+</div>
+<script>
+// ========== 三层计划库 ==========
+const planLibrary = {
+    domains: {
+        '计算机科学': { 
+            subjects: ['编程', '算法', '人工智能', '数据结构', '操作系统', '计算机网络'], 
+            goals: ['找到工作', '参加竞赛', '做项目', '考研究生', '出国深造'] 
+        },
+        '软件工程': { 
+            subjects: ['Web开发', '移动开发', '系统设计', '测试', 'DevOps', '数据库'], 
+            goals: ['入职大厂', '独立开发App', '开源贡献', '创业', '技术管理'] 
+        },
+        '人工智能': { 
+            subjects: ['机器学习', '深度学习', '自然语言处理', '计算机视觉', '强化学习'], 
+            goals: ['科研', '工业落地', '发论文', '竞赛获奖', '创业'] 
+        },
+        '数据科学': { 
+            subjects: ['数据分析', '数据可视化', '统计学', '大数据', '数据挖掘'], 
+            goals: ['成为数据分析师', '转行', '提升业务能力', '做数据产品'] 
+        },
+        '网络工程': { 
+            subjects: ['网络安全', '路由交换', '云计算', '物联网', '5G技术'], 
+            goals: ['考认证', '进安全公司', '运维转开发', '架构师'] 
+        },
+        '信息安全': { 
+            subjects: ['渗透测试', '逆向工程', '密码学', '安全运维', 'CTF竞赛'], 
+            goals: ['成为白帽黑客', '进大厂安全部', '创业做安全产品'] 
+        },
+        '物联网工程': { 
+            subjects: ['嵌入式开发', '传感器技术', '无线通信', '边缘计算'], 
+            goals: ['做智能硬件', '进车企', '智慧城市项目'] 
+        },
+        '数字媒体技术': { 
+            subjects: ['UI/UX设计', '动画制作', '视频剪辑', '交互设计', '3D建模', '游戏设计'], 
+            goals: ['作品集求职', '接商业项目', '参加比赛', '成为自由职业者', '开设工作室'] 
+        },
+        '生物信息学': { 
+            subjects: ['基因组学', '蛋白质结构', '生物统计', 'Python生物分析'], 
+            goals: ['科研', '医药公司', '交叉学科研究'] 
+        },
+        '金融科技': { 
+            subjects: ['量化交易', '区块链', '金融风控', 'Python金融分析'], 
+            goals: ['进投行', '做量化', '创业'] 
+        },
+        '电子信息工程': { 
+            subjects: ['嵌入式系统', '信号处理', '通信原理', 'FPGA开发', '电路设计'], 
+            goals: ['进芯片公司', '硬件工程师', '考研深造', '参与科研项目'] 
+        },
+        '自动化': { 
+            subjects: ['控制理论', '机器人学', 'PLC编程', '工业自动化', '智能控制'], 
+            goals: ['进制造业', '研发工程师', '考研', '参与智能工厂项目'] 
+        },
+        '数学与应用数学': { 
+            subjects: ['高等数学', '概率统计', '运筹学', '数值分析', '数学建模'], 
+            goals: ['考研', '转数据科学', '参加数学建模竞赛', '从事金融分析'] 
+        },
+        '心理学（认知方向）': { 
+            subjects: ['实验心理学', '认知神经科学', 'Python心理分析', '眼动追踪', '行为实验设计'], 
+            goals: ['科研', '进人机交互团队', '读研深造', '做用户体验研究'] 
+        },
+        '默认': { 
+            subjects: ['编程', '算法', '数据分析'], 
+            goals: ['找到工作', '做项目', '学习提升'] 
+        }
+    },
+    
+    subjectTasks: {
+        '编程': [
+            '学习Python基础语法和数据类型',
+            '掌握函数、类和模块的使用',
+            '理解异常处理和文件操作',
+            '练习使用列表推导式和生成器',
+            '学习装饰器和上下文管理器',
+            '掌握虚拟环境和包管理',
+            '练习面向对象编程思想',
+            '实现一个简单的命令行工具',
+            '学习多线程和多进程编程',
+            '掌握正则表达式',
+            '学习使用requests库爬取数据',
+            '掌握JSON和XML数据处理',
+            '练习单元测试编写',
+            '学习使用logging模块',
+            '掌握常用设计模式',
+            '阅读优秀开源项目源码',
+            '参与GitHub开源项目',
+            '写技术博客分享学习心得'
+        ],
+        '算法': [
+            '学习时间复杂度和空间复杂度分析',
+            '掌握数组和字符串的基本操作',
+            '学习排序算法：冒泡、选择、插入、归并、快速',
+            '掌握查找算法：二分查找、哈希表',
+            '学习链表、栈、队列的实现和应用',
+            '掌握树和二叉树的遍历',
+            '学习图的表示和遍历算法',
+            '掌握动态规划基本思想',
+            '练习背包问题和最长公共子序列',
+            '学习贪心算法和应用场景',
+            '掌握回溯算法和经典问题',
+            '学习并查集数据结构',
+            '练习LeetCode中等难度题目',
+            '参加周赛提升解题速度',
+            '学习算法优化技巧',
+            '实现经典算法的可视化',
+            '阅读《算法导论》相关章节',
+            '整理算法模板和套路'
+        ],
+        'Web开发': [
+            '学习HTML/CSS基础布局',
+            '掌握Flexbox和Grid布局',
+            '学习JavaScript基础与DOM操作',
+            '掌握ES6+语法特性',
+            '学习使用React或Vue框架',
+            '实现一个响应式个人主页',
+            '掌握RESTful API设计',
+            '学习Axios或Fetch数据请求',
+            '掌握组件化开发思想',
+            '学习状态管理（如Redux或Vuex）',
+            '部署项目到Vercel或Netlify',
+            '学习前端性能优化技巧',
+            '掌握浏览器开发者工具调试',
+            '实现用户登录注册功能',
+            '学习JWT身份验证',
+            '集成第三方API（如天气、地图）',
+            '写一份前端项目文档',
+            '参与开源前端项目'
+        ],
+        '数据分析': [
+            '学习Pandas数据清洗与处理',
+            '掌握NumPy数组操作',
+            '学习Matplotlib基础绘图',
+            '掌握Seaborn高级可视化',
+            '学习数据透视表与分组聚合',
+            '处理缺失值与异常值',
+            '掌握时间序列数据分析',
+            '学习相关性与回归分析',
+            '使用Jupyter Notebook组织分析流程',
+            '完成一个Kaggle入门项目',
+            '学习SQL基础查询语句',
+            '连接数据库读取数据',
+            '撰写数据分析报告',
+            '学习A/B测试基本原理',
+            '掌握数据故事讲述技巧',
+            '使用Plotly制作交互图表',
+            '学习数据预处理标准化方法',
+            '探索数据分布与特征工程'
+        ],
+        '数据可视化': [
+            '学习数据可视化基本原则',
+            '掌握Tableau或Power BI基础',
+            '使用ECharts制作动态图表',
+            '学习D3.js基础概念',
+            '设计信息图（Infographic）',
+            '实现仪表盘（Dashboard）布局',
+            '掌握色彩与字体在可视化中的应用',
+            '避免常见可视化误区',
+            '将静态图表转为交互式',
+            '发布可视化作品到社交平台',
+            '学习地理信息可视化（如地图热力图）',
+            '用Python生成PDF报告',
+            '结合业务场景讲好数据故事',
+            '参与数据可视化比赛',
+            '复现经典可视化案例',
+            '优化移动端图表显示效果',
+            '学习无障碍可视化设计',
+            '整合多源数据进行综合展示'
+        ],
+        'UI/UX设计': [
+            '学习设计原则：对比、对齐、重复、亲密性',
+            '掌握Figma基础操作和组件使用',
+            '学习Sketch或Adobe XD工具',
+            '分析3个优秀App的界面设计',
+            '临摹5个高质量UI界面',
+            '学习色彩理论和配色技巧',
+            '掌握字体选择和排版原则',
+            '学习图标设计和制作',
+            '完成1个完整的用户调研',
+            '绘制用户画像和用户旅程图',
+            '制作低保真和高保真原型',
+            '进行可用性测试并收集反馈',
+            '学习响应式设计原则',
+            '掌握设计系统构建方法',
+            '输出完整的设计规范文档',
+            '制作个人作品集网站',
+            '参加设计比赛积累经验',
+            '关注Dribbble和Behance最新趋势'
+        ],
+        '机器学习': [
+            '学习监督学习与无监督学习区别',
+            '掌握Scikit-learn基本用法',
+            '实现线性回归和逻辑回归',
+            '学习决策树与随机森林',
+            '掌握K-Means聚类算法',
+            '学习模型评估指标（准确率、召回率等）',
+            '处理过拟合与欠拟合问题',
+            '掌握交叉验证方法',
+            '学习特征选择与降维（PCA）',
+            '实现一个手写数字识别项目',
+            '学习超参数调优（GridSearch）',
+            '掌握Pipeline构建流程',
+            '学习模型保存与加载',
+            '阅读经典论文（如ResNet、Transformer）',
+            '参与Kaggle入门竞赛',
+            '学习模型可解释性方法',
+            '掌握数据标准化与归一化',
+            '了解AutoML工具使用'
+        ],
+        '科研': [
+            '阅读领域内顶会/顶刊论文',
+            '使用Zotero或EndNote管理文献',
+            '复现经典实验或算法',
+            '撰写文献综述',
+            '设计实验方案与控制变量',
+            '学习LaTeX排版学术论文',
+            '使用Git管理科研代码',
+            '绘制学术图表（如误差棒图）',
+            '参加学术讲座或研讨会',
+            '联系导师确定研究方向',
+            '申请科研训练项目（如SRTP）',
+            '撰写研究计划书（Proposal）',
+            '学习学术伦理与引用规范',
+            '准备学术海报展示',
+            '投稿会议或期刊',
+            '参与实验室组会汇报',
+            '学习使用Overleaf协作写作',
+            '建立个人学术主页'
+        ],
+        '创业': [
+            '完成商业模式画布（BMC）',
+            '进行用户痛点访谈',
+            '验证最小可行产品（MVP）',
+            '学习精益创业方法论',
+            '撰写商业计划书',
+            '参加创业大赛或路演',
+            '寻找技术合伙人',
+            '申请校园创业孵化器',
+            '学习基础财务知识（现金流、成本）',
+            '注册公司或个体工商户',
+            '设计品牌Logo与Slogan',
+            '搭建官网与社交媒体账号',
+            '制定用户增长策略',
+            '学习知识产权保护（商标、专利）',
+            '对接天使投资人',
+            '管理团队与任务分工',
+            '收集早期用户反馈',
+            '规划产品迭代路线图'
+        ]
+    },
+    
+    goalTasks: {
+        '找到工作': [
+            '完善技术简历，突出项目经验',
+            '制作高质量作品集网站',
+            '在GitHub上维护活跃的代码仓库',
+            '准备自我介绍和项目介绍',
+            '刷面经，掌握常见面试题',
+            '练习算法题，达到LeetCode中等水平',
+            '模拟面试，提升表达能力',
+            '投递目标公司的实习/全职岗位',
+            '参加校园招聘会和宣讲会',
+            '建立LinkedIn职业档案',
+            '联系校友内推',
+            '准备薪资谈判策略'
+        ],
+        '参加竞赛': [
+            '选择合适的竞赛（ACM、Kaggle、CTF等）',
+            '研究往届获奖作品和解题思路',
+            '组建实力均衡的团队',
+            '制定详细的备赛计划',
+            '每天固定时间训练',
+            '参加线上热身赛',
+            '复盘每次比赛的得失',
+            '学习竞赛专用技巧和工具',
+            '关注竞赛官方公告和规则',
+            '准备竞赛答辩和展示材料'
+        ],
+        '做项目': [
+            '确定项目主题和目标用户',
+            '进行市场调研和竞品分析',
+            '制定项目计划和里程碑',
+            '选择合适的技术栈',
+            '搭建项目基础框架',
+            '实现核心功能模块',
+            '进行单元测试和集成测试',
+            '优化性能和用户体验',
+            '部署项目到线上环境',
+            '撰写详细的项目文档',
+            '准备项目演示和分享',
+            '收集用户反馈并迭代'
+        ],
+        '考研': [
+            '确定目标院校和专业方向',
+            '制定全年复习计划表',
+            '购买权威教材和辅导资料',
+            '每天坚持英语单词背诵',
+            '系统复习数学/专业课基础',
+            '参加考研辅导班或自习小组',
+            '定期做真题模拟考试',
+            '整理错题本和知识框架',
+            '关注招生简章和政策变化',
+            '准备复试英语口语和专业问答',
+            '联系学长学姐获取经验',
+            '调整作息保持身心健康'
+        ],
+        '科研': [
+            '阅读领域内顶会/顶刊论文',
+            '使用Zotero或EndNote管理文献',
+            '复现经典实验或算法',
+            '撰写文献综述',
+            '设计实验方案与控制变量',
+            '学习LaTeX排版学术论文',
+            '使用Git管理科研代码',
+            '绘制学术图表（如误差棒图）',
+            '参加学术讲座或研讨会',
+            '联系导师确定研究方向',
+            '申请科研训练项目（如SRTP）',
+            '撰写研究计划书（Proposal）'
+        ],
+        '创业': [
+            '完成商业模式画布（BMC）',
+            '进行用户痛点访谈',
+            '验证最小可行产品（MVP）',
+            '学习精益创业方法论',
+            '撰写商业计划书',
+            '参加创业大赛或路演',
+            '寻找技术合伙人',
+            '申请校园创业孵化器',
+            '学习基础财务知识（现金流、成本）',
+            '注册公司或个体工商户',
+            '设计品牌Logo与Slogan',
+            '搭建官网与社交媒体账号'
+        ]
+    }
+};
+
+
+// emoji 库
+const emojis = ['😻', '😺','😸','😹','😼','😽','🙀','😿','😾','🐱','🐬','🐳','🐋','🐟','🦮','🐕','🐈','🦌','🐰','🐻‍❄️','🐻','🐨','🐹'];
+
+// 智能匹配专业领域
+function matchDomain(major, subject) {
+    for (const [domain, config] of Object.entries(planLibrary.domains)) {
+        if (major.includes(domain) || 
+            config.subjects.some(s => subject.includes(s)) ||
+            domain.toLowerCase().includes(major.toLowerCase()) ||
+            major.toLowerCase().includes(domain.toLowerCase())) {
+            return domain;
+        }
+    }
+    return '默认';
+}
+
+// 生成计划
+function generatePlan() {
+    const major = document.getElementById('major').value.trim() || '计算机科学';
+    const subject = document.getElementById('subject').value.trim() || '编程';
+    const goal = document.getElementById('goal').value.trim() || '找到工作';
+
+    // 匹配专业领域
+    let domain = matchDomain(major, subject);
+    
+    // 获取可用的学科和目标
+    const availableSubjects = planLibrary.domains[domain]?.subjects || ['编程'];
+    const availableGoals = planLibrary.domains[domain]?.goals || ['找到工作'];
+    
+    // 确保学科和目标在库中
+    const finalSubject = availableSubjects.find(s => subject.includes(s)) || availableSubjects[0];
+    const finalGoal = availableGoals.find(g => goal.includes(g)) || availableGoals[0];
+
+    // 获取任务池
+    const subjectTaskPool = planLibrary.subjectTasks[finalSubject] || planLibrary.subjectTasks['编程'];
+    const goalTaskPool = planLibrary.goalTasks[finalGoal] || planLibrary.goalTasks['找到工作'];
+    
+    // 合并任务池
+    const allTasks = [...new Set([...subjectTaskPool, ...goalTaskPool])];
+    
+    // 生成三周计划
+    const week1Plans = generateWeekFromPool(allTasks, 18);
+    const week2Plans = generateWeekFromPool(allTasks, 18);
+    const week3Plans = generateWeekFromPool(allTasks, 18);
+
+    fillPlans('page2', week1Plans);
+    fillPlans('page3', week2Plans);
+    fillPlans('page4', week3Plans);
+
+    showPage('page2');
+}
+
+function generateWeekFromPool(taskPool, count) {
+    const plans = [];
+    const usedTasks = new Set();
+    
+    for (let i = 0; i < count; i++) {
+        let task;
+        let attempts = 0;
+        do {
+            task = taskPool[Math.floor(Math.random() * taskPool.length)];
+            attempts++;
+            if (attempts > 100) break;
+        } while (usedTasks.has(task) && attempts <= 100);
+        
+        usedTasks.add(task);
+        const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+        plans.push(`${emoji} ${task}`);
+    }
+    return plans;
+}
+
+function fillPlans(pageId, plans) {
+    const items = document.querySelectorAll(`#${pageId} .plan-item`);
+    items.forEach((item, index) => {
+        item.textContent = plans[index] || '✨ 计划加载中...';
+    });
+}
+
+// 页面切换
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+}
+function showCongrats() {
+    document.getElementById('modal').style.display = 'flex';
+}
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+}
+window.onclick = (e) => {
+    if (e.target.id === 'modal') closeModal();
+};
+</script>
+
+</body>
+</html>
